@@ -1,0 +1,11 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+int main()
+{
+    cout << "1." << setw(10) << "Logan" << endl;
+    cout << "2." << setw(10) << left << "Logan" << endl;
+    cout << "3." << setw(10) << right << "Logan" << endl;
+    return 0;
+}
