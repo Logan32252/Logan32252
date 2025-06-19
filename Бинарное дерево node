@@ -1,0 +1,181 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace бинарное_дерево
+{
+    internal class Node
+    {
+        private Node _leftBranch;
+        private Node _rightBranch;
+
+        public Node(int id, int number)
+        {
+            _leftBranch = null;
+            _rightBranch = null;
+
+            Id = id;
+            Number = number;
+        }
+
+        public int Id { get; private set; }
+
+        public int Number { get; private set; }
+
+        public void Add(int number)
+        {
+            if (isChooseLeftBranch(number))
+                AddToBrench(ref _leftBranch, number);
+            else
+                AddToBrench(ref _rightBranch, number);
+                
+        }
+
+
+        public void PrintValues()
+        {
+            if (isBranchFree(_leftBranch) != true)
+                _leftBranch.PrintValues();
+
+            Console.WriteLine($"{Id} - {Number}");
+
+            if (isBranchFree(_rightBranch) != true)
+                _rightBranch.PrintValues();
+        }
+
+        public void Remove(int number)
+        {
+            if (number == Number)
+            {
+                if (_leftBranch != null)
+                {
+                    Number = _leftBranch.Number;
+                    _leftBranch.ShiftBranch();
+                }
+                else
+                {
+                    Number = _rightBranch.Number;
+                    _rightBranch.ShiftBranch();
+                }
+            }
+            else
+            {
+                if (isChooseLeftBranch(number))
+                    FindRemoveBranch(ref _leftBranch, number);
+                else
+                    FindRemoveBranch(ref _rightBranch,number);
+            }
+                
+        }
+
+        public void Find(int number)
+        {
+            if (number == Number)
+            {
+                Console.WriteLine($"{Id} - {Number}");
+            }
+            else
+            {
+                if (isChooseLeftBranch(number))
+                    _leftBranch.Find(number);
+                else
+                    _rightBranch.Find(number);
+            }
+        }
+
+        public Node RemoveOneBranch()
+        {
+            if(isBranchFree(_leftBranch) != true)
+                return _leftBranch;
+            else
+                return _rightBranch;
+        }
+
+        public void ShiftBranch()
+        {
+            if (isFree()==false)
+            {
+                if (_leftBranch != null)
+                {
+                    Number = _leftBranch.Number;
+                    _leftBranch = _leftBranch.RemoveOneBranch();
+                }
+                else
+                {
+                    Number = _rightBranch.Number;
+                    _rightBranch = _rightBranch.RemoveOneBranch();
+                }
+            }
+            else
+            {
+                if (isBranchFree(_leftBranch) != true)
+                    _leftBranch.ShiftBranch();
+                else if (isBranchFree(_rightBranch) != true)
+                    _rightBranch.ShiftBranch();
+            }
+        }
+
+        private bool isFree() => _leftBranch == null && _rightBranch == null;
+
+        private bool isChooseLeftBranch(int number) => number < Number;
+
+        private bool isBranchFree(Node node) => node == null;
+
+        private void AddToBrench(ref Node node, int number)
+        {
+            if (isBranchFree(node))
+            {
+                int newId = Id + 1;
+                node = new Node(newId, number);
+            }
+            else
+            {
+                node.Add(number);
+            }
+        }
+
+        private void InShiftBranch(ref Node node)
+        {
+            if (node.isFree())
+            {
+                Number = node.Number;
+                node = null;
+            }
+            else
+            {
+                Number = node.Number;
+                node.ShiftBranch();
+            }
+        }
+        private void RemoveBranch(ref Node node, int number)
+        {
+            if (node.isFree() == true)
+            {
+                if (node.isFree())
+                    node = null;
+                else
+                    node.ShiftBranch();
+            }
+            else
+            {
+                if (isBranchFree(_leftBranch) == false)
+                    _leftBranch = node.RemoveOneBranch();
+                else if (isBranchFree(_rightBranch) == false)
+                    _rightBranch = node.RemoveOneBranch();
+            }
+        }
+
+        private void FindRemoveBranch(ref Node node, int number)
+        {
+            if (node.Number == number)
+            {
+                RemoveBranch(ref node, number);
+            }
+            else
+                node.Remove(number);
+        }
+    }
+}
